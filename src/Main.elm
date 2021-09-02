@@ -21,13 +21,23 @@ main =
 -- Model
 
 
+type AnswerId
+    = AnswerId Int
+
+
 type alias Model =
-    Int
+    { currentQuestion : Int
+    , correctAnswers : Int
+    , currentSelected : Maybe AnswerId
+    }
 
 
 init : Model
 init =
-    0
+    { currentQuestion = 0
+    , correctAnswers = 0
+    , currentSelected = Nothing
+    }
 
 
 
