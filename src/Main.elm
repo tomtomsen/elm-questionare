@@ -1,8 +1,48 @@
 module Main exposing (main)
 
-import Html exposing (Html, text)
+import Browser
+import Dict exposing (update)
+import Html exposing (Html, div, text)
 
 
-main : Html Never
+
+-- Main
+
+
 main =
-    Html.div [] [ text "Hello world!" ]
+    Browser.sandbox
+        { init = init
+        , update = update
+        , view = view
+        }
+
+
+
+-- Model
+
+
+type alias Model =
+    Int
+
+
+init : Model
+init =
+    0
+
+
+
+-- Update
+
+
+update : msg -> Model -> Model
+update _ model =
+    model
+
+
+
+-- View
+
+
+view : Model -> Html msg
+view _ =
+    div [] [ text "Hello world!" ]
