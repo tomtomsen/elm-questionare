@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "elm": "^0.19.1-5"
+  },
+  "name": "@tomtomsen/elm-questionare",
+  "description": "Simple project to learn [elm](https://elm-lang.org/).",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-tomtomsen:tomtomsen/elm-questionare.git"
+  },
+  "keywords": [
+    "elm"
+  ],
+  "author": "tom tomsen",
+  "license": "ISC",
+  "devDependencies": {
+    "elm-live": "^4.0.2"
+  }
+}
