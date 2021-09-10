@@ -3,9 +3,11 @@ module Main exposing (main)
 import Array exposing (Array)
 import Browser
 import Dict exposing (update)
-import Html exposing (Html, button, div, text)
-import Html.Attributes exposing (style)
-import Html.Events exposing (onClick)
+import Element exposing (Element, column, el, rgba255, text)
+import Element.Border as Border
+import Element.Events exposing (onClick)
+import Element.Font as Font
+import Html exposing (Html)
 
 
 
@@ -144,6 +146,22 @@ isAnswerCorrect model =
 
 view : Model -> Html Msg
 view model =
+    Element.layout
+        [ Font.size 18
+        , Font.family
+            [ Font.external
+                { name = "Roboto"
+                , url = "https://fonts.googleapis.com/css?family=Roboto"
+                }
+            , Font.sansSerif
+            ]
+        ]
+    <|
+        viewLayout model
+
+
+viewLayout : Model -> Element Msg
+viewLayout model =
     let
         maybeQuestion =
             Array.get model.currentQuestion model.questions
@@ -162,7 +180,7 @@ view model =
             Just question ->
                 viewContainer <|
                     viewPanel <|
-                        div []
+                        column []
                             [ viewQuestion
                                 question
                             , viewSelectedAnswer
@@ -170,71 +188,70 @@ view model =
                             ]
 
 
-viewQuestionNotFound : Html Msg
+viewQuestionNotFound : Element Msg
 viewQuestionNotFound =
-    div [] [ text "Question not found" ]
+    el [] <| text "Question not found"
 
 
-viewScore : Html Msg
+viewScore : Element Msg
 viewScore =
-    div [] [ text "score" ]
+    el [] <| text "score"
 
 
-viewContainer : Html Msg -> Html Msg
+viewContainer : Element Msg -> Element Msg
 viewContainer body =
-    div
-        [ style "display" "flex"
-        , style "align-items" "center"
-        , style "justify-content" "center"
-        , style "height" "100vh"
+    el
+        [ Element.centerX
+        , Element.centerY
         ]
-        [ body ]
+        body
 
 
-viewPanel : Html Msg -> Html Msg
+viewPanel : Element Msg -> Element Msg
 viewPanel body =
-    div
-        [ style "border" "1px solid black"
-        , style "border-radius" "5px"
-        , style "padding" "20px"
+    el
+        [ Border.width 1
+        , Border.rounded 5
+        , Border.glow (rgba255 65 72 86 0.25) 5
+        , Element.padding 5
         ]
-        [ body ]
+        body
 
 
-viewQuestion : Question -> Html Msg
+viewQuestion : Question -> Element Msg
 viewQuestion question =
-    div []
-        [ div []
-            [ text question.question ]
-        , div
-            []
-            [ viewAnswers
+    column []
+        [ el [] <|
+            text
+                question.question
+        , el [] <|
+            viewAnswers
                 question.answers
-            ]
-        , button
-            [ onClick Submit ]
-            [ text "Submit" ]
+        , el [ onClick Submit ] <|
+            text
+                "Submit"
         ]
 
 
-viewAnswers : Answers -> Html Msg
+viewAnswers : Answers -> Element Msg
 viewAnswers answers =
     let
         divAnswers =
             List.map viewAnswer answers
     in
-    div [] divAnswers
+    column [] divAnswers
 
 
-viewSelectedAnswer : Maybe Answer -> Html Msg
+viewSelectedAnswer : Maybe Answer -> Element Msg
 viewSelectedAnswer answer =
-    div []
-        [ text ("Auswahl: " ++ Maybe.withDefault "" answer) ]
+    el [] <| text ("Auswahl: " ++ Maybe.withDefault "" answer)
 
 
-viewAnswer : Answer -> Html Msg
+viewAnswer : Answer -> Element Msg
 viewAnswer answer =
-    div
+    el
         [ onClick (Select answer)
         ]
-        [ text ("Answer: " ++ answer) ]
+    <|
+        text
+            ("Answer: " ++ answer)
