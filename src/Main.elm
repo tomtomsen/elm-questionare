@@ -1,8 +1,11 @@
 module Main exposing (main)
 
+import Array exposing (Array)
 import Browser
 import Dict exposing (update)
-import Html exposing (Html, div, text)
+import Html exposing (Html, button, div, text)
+import Html.Attributes exposing (style)
+import Html.Events exposing (onClick)
 
 
 
@@ -21,20 +24,58 @@ main =
 -- Model
 
 
-type AnswerId
-    = AnswerId Int
+type alias Answer =
+    String
+
+
+type alias Answers =
+    List Answer
+
+
+type alias Question =
+    { question : String
+    , answers : Answers
+    , correct : Answer
+    }
+
+
+type alias Questions =
+    Array Question
 
 
 type alias Model =
-    { currentQuestion : Int
+    { questions : Questions
+    , currentQuestion : Int
     , correctAnswers : Int
-    , currentSelected : Maybe AnswerId
+    , currentSelected : Maybe Answer
     }
+
+
+type Msg
+    = Select Answer
+    | Submit
 
 
 init : Model
 init =
-    { currentQuestion = 0
+    { questions =
+        Array.fromList
+            [ { question = "First question"
+              , answers =
+                    [ "Test"
+                    , "Other"
+                    ]
+              , correct = "Test"
+              }
+            , { question = "Second question"
+              , answers =
+                    [ "Yes"
+                    , "No"
+                    ]
+              , correct = "Yes"
+              }
+            ]
+    , currentQuestion = 0
     , correctAnswers = 0
     , currentSelected = Nothing
     }
@@ -44,15 +85,156 @@ init =
 -- Update
 
 
-update : msg -> Model -> Model
-update _ model =
-    model
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        Select answerId ->
+            updateSelect answerId model
+
+        Submit ->
+            updateSubmit model
+
+
+updateSelect : Answer -> Model -> Model
+updateSelect answer model =
+    { model | currentSelected = Just answer }
+
+
+updateSubmit : Model -> Model
+updateSubmit model =
+    let
+        correct =
+            isAnswerCorrect model
+
+        nextModel =
+            { model | currentQuestion = model.currentQuestion + 1, currentSelected = Nothing }
+    in
+    if correct then
+        { nextModel | correctAnswers = nextModel.correctAnswers + 1 }
+
+    else
+        nextModel
+
+
+isAnswerCorrect : Model -> Bool
+isAnswerCorrect model =
+    let
+        maybeQuestion =
+            Array.get model.currentQuestion model.questions
+
+        maybeSelected =
+            model.currentSelected
+    in
+    case maybeQuestion of
+        Nothing ->
+            False
+
+        Just question ->
+            case maybeSelected of
+                Nothing ->
+                    False
+
+                Just selected ->
+                    selected == question.correct
 
 
 
 -- View
 
 
-view : Model -> Html msg
-view _ =
-    div [] [ text "Hello world!" ]
+view : Model -> Html Msg
+view model =
+    let
+        maybeQuestion =
+            Array.get model.currentQuestion model.questions
+
+        end =
+            model.currentQuestion >= Array.length model.questions
+    in
+    if end == True then
+        viewScore
+
+    else
+        case maybeQuestion of
+            Nothing ->
+                viewQuestionNotFound
+
+            Just question ->
+                viewContainer <|
+                    viewPanel <|
+                        div []
+                            [ viewQuestion
+                                question
+                            , viewSelectedAnswer
+                                model.currentSelected
+                            ]
+
+
+viewQuestionNotFound : Html Msg
+viewQuestionNotFound =
+    div [] [ text "Question not found" ]
+
+
+viewScore : Html Msg
+viewScore =
+    div [] [ text "score" ]
+
+
+viewContainer : Html Msg -> Html Msg
+viewContainer body =
+    div
+        [ style "display" "flex"
+        , style "align-items" "center"
+        , style "justify-content" "center"
+        , style "height" "100vh"
+        ]
+        [ body ]
+
+
+viewPanel : Html Msg -> Html Msg
+viewPanel body =
+    div
+        [ style "border" "1px solid black"
+        , style "border-radius" "5px"
+        , style "padding" "20px"
+        ]
+        [ body ]
+
+
+viewQuestion : Question -> Html Msg
+viewQuestion question =
+    div []
+        [ div []
+            [ text question.question ]
+        , div
+            []
+            [ viewAnswers
+                question.answers
+            ]
+        , button
+            [ onClick Submit ]
+            [ text "Submit" ]
+        ]
+
+
+viewAnswers : Answers -> Html Msg
+viewAnswers answers =
+    let
+        divAnswers =
+            List.map viewAnswer answers
+    in
+    div [] divAnswers
+
+
+viewSelectedAnswer : Maybe Answer -> Html Msg
+viewSelectedAnswer answer =
+    div []
+        [ text ("Auswahl: " ++ Maybe.withDefault "" answer) ]
+
+
+viewAnswer : Answer -> Html Msg
+viewAnswer answer =
+    div
+        [ onClick (Select answer)
+        ]
+        [ text ("Answer: " ++ answer) ]
