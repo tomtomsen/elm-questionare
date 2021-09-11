@@ -107,15 +107,22 @@ updateSubmit model =
     let
         correct =
             isAnswerCorrect model
-
-        nextModel =
-            { model | currentQuestion = model.currentQuestion + 1, currentSelected = Nothing }
     in
-    if correct then
-        { nextModel | correctAnswers = nextModel.correctAnswers + 1 }
+    if model.currentSelected == Nothing then
+        model
+
+    else if correct then
+        { model
+            | currentQuestion = model.currentQuestion + 1
+            , currentSelected = Nothing
+            , correctAnswers = model.correctAnswers + 1
+        }
 
     else
-        nextModel
+        { model
+            | currentQuestion = model.currentQuestion + 1
+            , currentSelected = Nothing
+        }
 
 
 isAnswerCorrect : Model -> Bool
@@ -227,10 +234,15 @@ viewQuestion question =
         , el [] <|
             viewAnswers
                 question.answers
-        , el [ onClick Submit ] <|
-            text
-                "Submit"
+        , viewButton Submit
         ]
+
+
+viewButton : Msg -> Element Msg
+viewButton msg =
+    el [ onClick msg ] <|
+        text
+            "Submit"
 
 
 viewAnswers : Answers -> Element Msg
