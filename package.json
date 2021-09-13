@@ -7,7 +7,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "elm-live src/Main.elm",
+    "start": "elm-live src/Main.elm -s index.html -- --output elm.js",
+    "build": "elm make src/Main.elm --output=elm.js --debug",
+    "build:prod": "elm make src/Main.elm --output=elm.js --optimize && uglifyjs elm.js --compress 'pure_funcs=\"F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9\",pure_getters=true,keep_fargs=false,unsafe_comps=true,unsafe=true,passes=2' --output elm.js && uglifyjs elm.js --mangle --output elm.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +23,7 @@
   "license": "ISC",
   "devDependencies": {
     "elm-format": "^0.8.5",
-    "elm-live": "^4.0.2"
+    "elm-live": "^4.0.2",
+    "uglify-js": "^3.14.2"
   }
 }
