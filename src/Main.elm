@@ -3,8 +3,8 @@ module Main exposing (main)
 import Array exposing (Array)
 import Browser
 import Dict exposing (update)
-import Html exposing (Html, button, div, input, text)
-import Html.Attributes exposing (class, type_)
+import Html exposing (Html, button, div, input, label, text)
+import Html.Attributes exposing (class, type_, name, checked, value, style)
 import Html.Events exposing (onClick)
 
 
@@ -183,7 +183,6 @@ view model =
                         viewQuestion
                             question
                             model.currentSelected
-                                
 
 
 viewQuestionNotFound : Html Msg
@@ -207,7 +206,8 @@ viewScore model =
                 ]
                 [ text "Questionare complete" ]
             , div
-                [ class "panel--content" ]
+                [ class "panel--content"
+                , style "text-align" "center" ]
                 [ text hint ]
             , button
                 [ onClick Reset
@@ -272,8 +272,14 @@ viewAnswer answer maybeSelected =
     div
         [ onClick (Select answer)
         ]
-        [ text ("Answer: " ++ answer)
-        , input [ type_ "radio" ] [ text "hi" ]
+        [ 
+            label [] [
+                input [ type_ "radio"
+                , name "answer"
+                , checked (Just answer == maybeSelected)
+                , value answer ] []
+                , text answer
+            ]
         ]
 
 
