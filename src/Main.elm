@@ -213,7 +213,7 @@ viewScore model =
                 [ onClick Reset
                 , class "panel--button"
                 ]
-                [ text "Reset" ]
+                [ text "Restart" ]
             ]
 
 
@@ -277,7 +277,7 @@ viewAnswer answer maybeSelected =
                 input [ type_ "radio"
                 , name "answer"
                 , checked (Just answer == maybeSelected)
-                , value answer ] []
+                ] []
                 , text answer
             ]
         ]
