@@ -4,7 +4,7 @@ import Array exposing (Array)
 import Browser
 import Dict exposing (update)
 import Html exposing (Html, button, div, input, label, text)
-import Html.Attributes exposing (class, type_, name, checked, value, style)
+import Html.Attributes exposing (class, type_, name, checked, style)
 import Html.Events exposing (onClick)
 
 
@@ -281,9 +281,3 @@ viewAnswer answer maybeSelected =
                 , text answer
             ]
         ]
-
-
-viewSelectedAnswer : Maybe Answer -> Html Msg
-viewSelectedAnswer answer =
-    div []
-        [ text ("Auswahl: " ++ Maybe.withDefault "" answer) ]
