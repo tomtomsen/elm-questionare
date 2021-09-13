@@ -3,8 +3,8 @@ module Main exposing (main)
 import Array exposing (Array)
 import Browser
 import Dict exposing (update)
-import Html exposing (Html, button, div, text)
-import Html.Attributes exposing (class, style)
+import Html exposing (Html, button, div, input, text)
+import Html.Attributes exposing (class, type_)
 import Html.Events exposing (onClick)
 
 
@@ -54,6 +54,7 @@ type alias Model =
 type Msg
     = Select Answer
     | Submit
+    | Reset
 
 
 init : Model
@@ -94,6 +95,9 @@ update msg model =
         Submit ->
             updateSubmit model
 
+        Reset ->
+            updateReset model
+
 
 updateSelect : Answer -> Model -> Model
 updateSelect answer model =
@@ -121,6 +125,13 @@ updateSubmit model =
             | currentQuestion = model.currentQuestion + 1
             , currentSelected = Nothing
         }
+
+updateReset : Model -> Model
+updateReset model =
+    { model | currentQuestion = 0
+    , correctAnswers = 0
+    , currentSelected = Nothing
+    }
 
 
 isAnswerCorrect : Model -> Bool
@@ -159,7 +170,7 @@ view model =
             model.currentQuestion >= Array.length model.questions
     in
     if end == True then
-        viewScore
+        viewScore model
 
     else
         case maybeQuestion of
@@ -167,14 +178,12 @@ view model =
                 viewQuestionNotFound
 
             Just question ->
-                div []
-                    [ viewContainer <|
-                        viewPanel <|
-                            viewQuestion
-                                question
-                    , viewSelectedAnswer
-                        model.currentSelected
-                    ]
+                viewContainer <|
+                    viewPanel <|
+                        viewQuestion
+                            question
+                            model.currentSelected
+                                
 
 
 viewQuestionNotFound : Html Msg
@@ -182,9 +191,31 @@ viewQuestionNotFound =
     div [] [ text "Question not found" ]
 
 
-viewScore : Html Msg
-viewScore =
-    div [] [ text "score" ]
+viewScore : Model -> Html Msg
+viewScore model =
+    let
+        hint = (String.fromInt model.correctAnswers) 
+            ++ " of " 
+            ++ String.fromInt (Array.length model.questions)
+            ++ " answers correct"
+    in
+    viewContainer <|
+        viewPanel <|
+            div []
+            [ div
+                [ class "panel--title"
+                ]
+                [ text "Questionare complete" ]
+            , div
+                [ class "panel--content" ]
+                [ text hint ]
+            , button
+                [ onClick Reset
+                , class "panel--button"
+                ]
+                [ text "Reset" ]
+            ]
+
 
 
 viewContainer : Html Msg -> Html Msg
@@ -202,8 +233,8 @@ viewPanel body =
         [ body ]
 
 
-viewQuestion : Question -> Html Msg
-viewQuestion question =
+viewQuestion : Question -> Maybe Answer -> Html Msg
+viewQuestion question maybeSelectedAnswer =
     div []
         [ div
             [ class "panel--title"
@@ -213,31 +244,40 @@ viewQuestion question =
             [ class "panel--content" ]
             [ viewAnswers
                 question.answers
+                maybeSelectedAnswer
             ]
         , button
-            [ onClick Submit ]
+            [ onClick Submit
+            , class "panel--button"
+            ]
             [ text "Submit" ]
         ]
 
 
-viewAnswers : Answers -> Html Msg
-viewAnswers answers =
+viewAnswers : Answers -> Maybe Answer -> Html Msg
+viewAnswers answers maybeSelected =
     let
         divAnswers =
-            List.map viewAnswer answers
+            List.map
+                (\x ->
+                    viewAnswer x maybeSelected
+                )
+                answers
     in
     div [] divAnswers
+
+
+viewAnswer : Answer -> Maybe Answer -> Html Msg
+viewAnswer answer maybeSelected =
+    div
+        [ onClick (Select answer)
+        ]
+        [ text ("Answer: " ++ answer)
+        , input [ type_ "radio" ] [ text "hi" ]
+        ]
 
 
 viewSelectedAnswer : Maybe Answer -> Html Msg
 viewSelectedAnswer answer =
     div []
         [ text ("Auswahl: " ++ Maybe.withDefault "" answer) ]
-
-
-viewAnswer : Answer -> Html Msg
-viewAnswer answer =
-    div
-        [ onClick (Select answer)
-        ]
-        [ text ("Answer: " ++ answer) ]
