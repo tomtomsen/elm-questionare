@@ -4,7 +4,7 @@ import Array exposing (Array)
 import Browser
 import Dict exposing (update)
 import Html exposing (Html, button, div, text)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 
 
@@ -167,14 +167,14 @@ view model =
                 viewQuestionNotFound
 
             Just question ->
-                viewContainer <|
-                    viewPanel <|
-                        div []
-                            [ viewQuestion
+                div []
+                    [ viewContainer <|
+                        viewPanel <|
+                            viewQuestion
                                 question
-                            , viewSelectedAnswer
-                                model.currentSelected
-                            ]
+                    , viewSelectedAnswer
+                        model.currentSelected
+                    ]
 
 
 viewQuestionNotFound : Html Msg
@@ -190,20 +190,14 @@ viewScore =
 viewContainer : Html Msg -> Html Msg
 viewContainer body =
     div
-        [ style "display" "flex"
-        , style "align-items" "center"
-        , style "justify-content" "center"
-        , style "height" "100vh"
-        ]
+        []
         [ body ]
 
 
 viewPanel : Html Msg -> Html Msg
 viewPanel body =
     div
-        [ style "border" "1px solid black"
-        , style "border-radius" "5px"
-        , style "padding" "20px"
+        [ class "panel"
         ]
         [ body ]
 
@@ -211,12 +205,15 @@ viewPanel body =
 viewQuestion : Question -> Html Msg
 viewQuestion question =
     div []
-        [ div []
+        [ div
+            [ class "panel--title"
+            ]
             [ text question.question ]
         , div
-            []
+            [ class "panel--content" ]
             [ viewAnswers
-                question.answers ]
+                question.answers
+            ]
         , button
             [ onClick Submit ]
             [ text "Submit" ]

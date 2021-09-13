@@ -14,9 +14,60 @@
 
     <!-- Import Ionicon icons & Google Fonts our Bootstrap theme relies on -->
     <link href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="//fonts.googleapis.com">
+    <link rel="preconnect" href="//fonts.gstatic.com" crossorigin>
+    <link href="//fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet"> 
 
     <script src="elm.js"></script>
+    <style>
+      body, html {
+        background-color: #F0F1F8;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Nunito', sans-serif;
+      }
+
+      .panel {
+        --background: #ffffff;
+        --text: #414856;
+        --radio: #7C96B2;
+        --radio-checked: #4F29F0;
+        --radio-size: 20px;
+        --width: 400px;
+        --border-radius: 10px;
+        background: var(--background);
+        width: var(--width);
+        border-radius: var(--border-radius);
+        color: var(--text);
+        position: relative;
+        box-shadow: 0 0 30px rgba(65, 72, 86, 0.25);
+        display: grid;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .panel--content {
+        padding: 20px;
+      }
+
+      .panel--title {
+        font-weight: bold;
+        margin-top: 20px;
+        text-align:center;
+      }
+
+      button {
+          width: 100%;
+          background-color: #4273F4;
+          border: 0;
+          color: white;
+          font-size: 1.06em;
+          padding: 25px 0;
+      }
+    </style>
   </head>
   <body>
     <div id="elm"></div>
