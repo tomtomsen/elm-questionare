@@ -65,19 +65,50 @@ initModel : Model
 initModel = 
     { questions =
         Array.fromList
-            [ { question = "First question"
+            [ { question = "Which two words traditionally appear onscreen at the termination of a feature film?"
               , answers =
-                    [ "Test"
-                    , "Other"
+                    [ "The End"
+                    , "The Conclusion"
+                    , "The Finish"
+                    , "The Pizza Rolls Are Done"
                     ]
-              , correct = "Test"
+              , correct = "The End"
               }
-            , { question = "Second question"
+            , { question = "A magnet would most likely attract which of the following?"
               , answers =
-                    [ "Yes"
-                    , "No"
+                    [ "Metal"
+                    , "Plastic"
+                    , "Wood"
+                    , "The wrong man"
                     ]
-              , correct = "Yes"
+              , correct = "Metal"
+              }
+            , { question = "Which of these names is not in the title of a Shakespeare play?"
+              , answers =
+                    [ "Hamlet"
+                    , "Romeo"
+                    , "Macbath"
+                    , "Darren"
+                    ]
+              , correct = "Darren"
+              }
+            , { question = "Where did Scotch whisky originate?"
+              , answers =
+                    [ "Ireland"
+                    , "Wales"
+                    , "Scotland"
+                    , "The United Stated"
+                    ]
+              , correct = "Scotland"
+              }
+            , { question = "In which of these films does Whoopi Goldberg dress up as a nun?"
+              , answers =
+                    [ "Sister Act"
+                    , "Ghost"
+                    , "The Color Purple"
+                    , "How Judas Got His Groove Back"
+                    ]
+              , correct = "Sister Act"
               }
             ]
     , currentQuestion = 0
@@ -289,6 +320,7 @@ viewAnswer : Answer -> Maybe Answer -> Html Msg
 viewAnswer answer maybeSelected =
     div
         [ onClick (Select answer)
+        , class "answer"
         ]
         [ 
             label [] [
