@@ -59,6 +59,10 @@ type Msg
 
 init : Model
 init =
+    initModel
+
+initModel : Model
+initModel = 
     { questions =
         Array.fromList
             [ { question = "First question"
@@ -81,8 +85,6 @@ init =
     , currentSelected = Nothing
     }
 
-
-
 -- Update
 
 
@@ -96,7 +98,7 @@ update msg model =
             updateSubmit model
 
         Reset ->
-            updateReset model
+            updateReset
 
 
 updateSelect : Answer -> Model -> Model
@@ -126,12 +128,9 @@ updateSubmit model =
             , currentSelected = Nothing
         }
 
-updateReset : Model -> Model
-updateReset model =
-    { model | currentQuestion = 0
-    , correctAnswers = 0
-    , currentSelected = Nothing
-    }
+updateReset : Model
+updateReset =
+    initModel
 
 
 isAnswerCorrect : Model -> Bool
@@ -167,7 +166,7 @@ view model =
             Array.get model.currentQuestion model.questions
 
         end =
-            model.currentQuestion >= Array.length model.questions
+            model.currentQuestion == Array.length model.questions
     in
     if end == True then
         viewScore model
@@ -187,7 +186,26 @@ view model =
 
 viewQuestionNotFound : Html Msg
 viewQuestionNotFound =
-    div [] [ text "Question not found" ]
+    let
+        hint = "Question not found"
+    in
+    viewContainer <|
+        viewPanel <|
+            div []
+            [ div
+                [ class "panel--title"
+                ]
+                [ text "That was unexpected" ]
+            , div
+                [ class "panel--content"
+                , style "text-align" "center" ]
+                [ text hint ]
+            , button
+                [ onClick Reset
+                , class "panel--button"
+                ]
+                [ text "Restart" ]
+            ]
 
 
 viewScore : Model -> Html Msg
